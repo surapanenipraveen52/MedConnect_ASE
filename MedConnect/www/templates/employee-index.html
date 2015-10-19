@@ -1,0 +1,21 @@
+<ion-view view-title="MedConnect Home" >
+    
+  <ion-content class="padding">
+        <div class="bar bar-subheader item-input-inset">
+        <label class="item-input-wrapper">
+            <i class="icon ion-ios7-search placeholder-icon"></i>
+            <input id="searchKey" type="search" placeholder="Search" ng-model="searchKey" autocorrect="off" >
+            <button class="button button-clear" ng-click="clearSearch()">X</button>
+        </label>
+        <button class="button button-clear" ng-click="search()">Search</button>
+    </div><br><br>
+        <ion-list>
+            <ion-item ng-repeat="employee in employees" type="item-text-wrap" class="item-avatar"
+                      href="#/employees/{{employee.id}}">
+                <img src="pics/{{employee.id}}.jpg"/>
+                {{employee.firstname}} {{employee.lastname}}
+                <p>{{employee.specialization}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
