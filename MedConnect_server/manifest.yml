@@ -1,0 +1,8 @@
+applications:
+- path: MedConnect.war
+  memory: 1024M
+  instances: 1
+  domain: mybluemix.net
+  name: MedConnect
+  host: medconnect
+  disk_quota: 1024M
