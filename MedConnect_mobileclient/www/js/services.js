@@ -14,6 +14,43 @@ angular.module('starter.services', [])
     }).success(function(data){
       if (name == data[0].username && pw == data[0].password) {
           localStorage.setItem("patientid",data[0]._id.$oid );
+          localStorage.setItem("patientname",data[0].firstname );
+                deferred.resolve('Welcome ' + data[0].username + '!');
+            } else {
+                deferred.reject('Wrong credentials.');
+            }
+                 
+    })
+    promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+                
+            
+        }
+    }
+})
+.service('doctorLoginService', function($q, $http) {
+    return {
+  loginUser: function(name, pw) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+ 
+             $http({
+        method: 'GET',
+        url: 'https://api.mongolab.com/api/1/databases/medcon/collections/Doctors?q={username:\''+name+'\'}&apiKey=BSHQMdPlD-USKTsizAPOBio_XS-05S-b',
+        contentType:"application/json"
+        
+    }).success(function(data){
+      if (name == data[0].username && pw == data[0].password) {
+          localStorage.setItem("docmongoid",data[0]._id.$oid );
+          
+            localStorage.setItem("docname",data[0].firstname);
                 deferred.resolve('Welcome ' + data[0].username + '!');
             } else {
                 deferred.reject('Wrong credentials.');
@@ -79,6 +116,52 @@ angular.module('starter.services', [])
         }
     }
 })
+.service('doctorRegisterService', function($q, $http) {
+    return {
+        RegisterUser: function(fname, lname,specialization,qualification,hname,haddress,city,phone, username, password) {
+            var deferred = $q.defer();
+            var promise = deferred.promise;
+          $http({
+        method: 'POST',
+        url: 'https://api.mongolab.com/api/1/databases/medcon/collections/Doctors?apiKey=BSHQMdPlD-USKTsizAPOBio_XS-05S-b',
+        data: JSON.stringify({
+       firstname: fname,
+        lastname: lname,
+        specialization: specialization,
+        qualification:qualification,
+        hname:hname,
+        haddress:haddress,
+            city:city,
+            phone:phone,
+            username:username,
+        password: password,
+    }),
+        contentType:"application/json"
+        
+    }).success(function(data){
+            
+              deferred.resolve('Welcome!');
+            /* if ( data[0].username != null && data[0].password != null && data[0].lastname != null && data[0].firstname != null &&data[0].email != null ) {
+                deferred.resolve('Welcome ' + data[0].username + '!');
+            } else {
+                deferred.reject('please fill all the fields');
+            }
+              */ 
+    
+    })
+           promise.success = function(fn) {
+                promise.then(fn);
+                return promise;
+            }
+            promise.error = function(fn) {
+                promise.then(null, fn);
+                return promise;
+            }
+            return promise;
+           
+        }
+    }
+})
 
     .service('AppointmentService', function($q, $http) {
         var appointments =[];
@@ -96,8 +179,21 @@ angular.module('starter.services', [])
                 })   
                 return deferred.promise;
         },
+             finddoc: function(doctorname) {
+             var deferred = $q.defer();
+                $http({
+                    method: 'GET',
+                    url: 'https://api.mongolab.com/api/1/databases/medcon/collections/appointments?&q=  {doctorname:\''+doctorname+'\'}&apiKey=BSHQMdPlD-USKTsizAPOBio_XS-05S-b',
+                    contentType:"application/json"
+        
+                }).success(function(data){
+                    appointments = data;
+                    deferred.resolve(data);
+                })   
+                return deferred.promise;
+        },
     
-        createNew: function(patientid,doctormongoid, doctorid,date,h,m,a,doctorname) {
+        createNew: function(patientid,doctormongoid, doctorid,date,h,m,a,doctorname,patientname) {
             var deferred = $q.defer();
               $http({
                 method: 'POST',
@@ -110,7 +206,9 @@ angular.module('starter.services', [])
                     h:h,
                     m:m,
                     a:m,
-                    doctorname:doctorname
+                    doctorname:doctorname,
+                    patientname:patientname
+            
                 }),
                 contentType:"application/json"
         
@@ -120,6 +218,28 @@ angular.module('starter.services', [])
             return deferred.promise;
         }
 
+    }
+})
+
+ .service('DocProfileService', function($q, $http) {
+       var employees =[];
+        return {
+         getData: function(docname) {
+            
+             var deferred = $q.defer();
+                $http({
+                    method: 'GET',
+                    url: 'https://api.mongolab.com/api/1/databases/medcon/collections/Doctors?&q=  {firstname:\''+docname+'\'}&apiKey=BSHQMdPlD-USKTsizAPOBio_XS-05S-b',
+                    contentType:"application/json"
+        
+                }).success(function(data){
+                    employees = data;
+                    
+                    deferred.resolve(data);
+                })   
+                return deferred.promise;
+        }
+         
     }
 })
 

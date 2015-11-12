@@ -76,15 +76,55 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services' ,'
         }
       }
     })
+   .state('doctortab', {
+    url: '/doctortab',
+    
+    templateUrl: 'templates/doctortabs.html'
+  })
+
+  // Each tab has its own nav history stack:
+
+  
+  .state('doctortab.employee', {
+    url: '/employee-profile',
+    views: {
+      'doctortab-employee': {
+        templateUrl: 'templates/employee-profile.html',
+        controller: 'DocProfileCtrl'
+      }
+    }
+  })
+      
+
+
+  .state('doctortab.docappointments', {
+      url: '/docappointments',
+      views: {
+        'docappointments': {
+          templateUrl: 'templates/docappointments.html',
+          controller: 'AppointmentsCtrl'
+        }
+      }
+    })
    .state('login', {
       url: '/login',
       templateUrl: 'templates/login.html',
       controller: 'LoginCtrl'
   })
+   .state('doctorLogin', {
+      url: '/doctorLogin',
+      templateUrl: 'templates/doctorLogin.html',
+      controller: 'doctorLoginCtrl'
+  })
   .state('register', {
       url: '/register',
       templateUrl: 'templates/register.html',
       controller: 'RegisterCtrl'
+  })
+   .state('doctorRegister', {
+      url: '/doctorRegister',
+      templateUrl: 'templates/doctorRegister.html',
+      controller: 'doctorRegisterCtrl'
   })
   
   .state('datepicker', {
@@ -100,8 +140,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services' ,'
                 templateUrl: 'templates/join-call.html',
                 controller: 'DatepickerCtrl'
             })
+  .state('home', {
+                url: '/home',
+                templateUrl: 'templates/home.html',
+                controller: 'HomeCtrl'
+            })
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/home');
 
 });

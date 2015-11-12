@@ -1,0 +1,39 @@
+<ion-view view-title="Sign up" name="register-view">
+  <ion-content class="padding">
+        <br> <br>
+      <div class="list list-inset">
+          <label class="item item-input">
+              <input type="text" placeholder="FirstName" ng-model="data.firstname" required="true">
+          </label>
+           <label class="item item-input">
+              <input type="text" placeholder="LastName" ng-model="data.lastname" required="true">
+          </label>
+           <label class="item item-input">
+              <input type="text" placeholder="Specialization" ng-model="data.specialization" required="true">
+          </label>
+           <label class="item item-input">
+              <input type="text" placeholder="Qualification" ng-model="data.qualification" required="true">
+          </label>
+          <label class="item item-input">
+              <input type="text" placeholder="Hospital name" ng-model="data.hname" required ="true" >
+          </label>
+           <label class="item item-input">
+              <input type="text" placeholder="Hospital address" ng-model="data.haddress" required ="true" >
+          </label>
+           <label class="item item-input">
+              <input type="text" placeholder="City" ng-model="data.city" required ="true" >
+          </label>
+            <label class="item item-input">
+              <input type="text" placeholder="Contact number" ng-model="data.phone" required ="true" >
+          </label>
+           <label class="item item-input">
+              <input type="text" placeholder="Username" ng-model="data.username" required="true">
+          </label>
+          <label class="item item-input">
+              <input type="password" placeholder="Password" ng-model="data.password" required="true">
+          </label>
+         
+      </div>
+      <button class="button button-block button-positive" ng-click="register(data.specialization)">Register</button>
+  </ion-content>
+</ion-view>

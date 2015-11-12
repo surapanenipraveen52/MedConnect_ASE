@@ -47,6 +47,48 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
 };
 }
 )
+  .controller('doctorLoginCtrl', function($scope, doctorLoginService, $ionicPopup, $state ,ngFB) {
+       $scope.data = {};
+ 
+    $scope.login = function(username) {
+         doctorLoginService.loginUser($scope.data.username, $scope.data.password).success(function(data) {
+            $state.go('doctortab');
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Login failed!',
+                template: 'Please check your credentials!'
+            });
+        });
+           
+    }
+  /* $scope.fbLogin = function () {
+    ngFB.login({scope: 'email, public_profile,publish_actions'}).then(
+        function (response) {
+            if (response.status === 'connected') {
+                console.log('Facebook login succeeded');
+                //$scope.closeLogin();
+            } else {
+                alert('Facebook login failed');
+            }
+        });
+};*/
+    $scope.signup =function()
+    {
+        $state.go('register');
+    }
+     $scope.fbLogin = function () {
+    ngFB.login({scope: 'email, public_profile,publish_actions'}).then(
+        function (response) {
+            if (response.status === 'connected') {
+                console.log('Facebook login succeeded');
+                //$scope.closeLogin();
+            } else {
+                alert('Facebook login failed');
+            }
+        });
+};
+}
+)
   
 .controller('RegisterCtrl', function($scope, RegisterService, $ionicPopup, $state) {
     $scope.data = {};
@@ -54,6 +96,22 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
     $scope.register = function(email){
       
             RegisterService.RegisterUser($scope.data.firstname, $scope.data.lastname, $scope.data.address, $scope.data.age, $scope.data.email, $scope.data.username, $scope.data.password ).success(function(data) {
+           alert(data.lastname);
+                $state.go('login');
+        }).error(function(data) {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Login failed!',
+                template: 'Please check your credentials!'
+            });
+        });
+    }
+})
+.controller('doctorRegisterCtrl', function($scope, doctorRegisterService, $ionicPopup, $state) {
+    $scope.data = {};
+ 
+    $scope.register = function(specialization){
+      
+           doctorRegisterService.RegisterUser($scope.data.firstname, $scope.data.lastname, $scope.data.specialization, $scope.data.qualification, $scope.data.hname, $scope.data.haddress, $scope.data.city ,$scope.data.phone,$scope.data.username,$scope.data.password).success(function(data) {
            alert(data.lastname);
                 $state.go('login');
         }).error(function(data) {
@@ -173,7 +231,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
           var m= minute;
           var a= AM;
           AppointmentService.createNew(localStorage.patientid,localStorage.doctormongoid, localStorage.doctorid,$scope.selecteddate,
-                                      h,m,a,localStorage.doctorname);
+                                      h,m,a,localStorage.doctorname,localStorage.patientname);
           $state.go('tab.appointments');
           
       }
@@ -190,8 +248,55 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
         findAllChats();
 })
 
+ .controller('DocProfileCtrl', function ($scope, $stateParams, $state, DocProfileService,AppointmentService,$ionicModal) {
+    
+    var docname= localStorage.docname;
+    
+   
+    DocProfileService.getData(docname).then(function(employee) {
+       
+            $scope.employee = employee[0];
+            console.log(employee);
+    });
+    
+    
+        
+    
+    })
+
+.controller('ChatsCtrl', function($scope,AppointmentService) {
+     var findAllChats = function() {
+            AppointmentService.findAll(localStorage.patientid).then(function (chats) {
+                $scope.chats = chats;
+                console.log(chats);
+            });
+        }
+
+        findAllChats();
+})
+
+.controller('AppointmentsCtrl', function($scope,AppointmentService) {
+     var findAllChats = function() {
+            AppointmentService.finddoc(localStorage.doctorname).then(function (chats) {
+                $scope.chats = chats;
+                console.log(chats);
+            });
+        }
+
+        findAllChats();
+})
+
 .controller('AccountCtrl', function($scope) {
   $scope.settings = {
     enableFriends: true
   };
+})
+.controller('HomeCtrl', function($scope, $ionicPopup, $state) {
+   $scope.goD= function () {
+       $state.go('doctorLogin');
+   }
+   $scope.goP= function () {
+       $state.go('login');
+   }
 });
+
