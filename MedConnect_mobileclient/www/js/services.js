@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+    angular.module('starter.services', [])
 
     .service('LoginService', function($q, $http) {
     return {
