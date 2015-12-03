@@ -6,7 +6,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
 
 .controller('LoginCtrl', function ($scope, LoginService, $ionicPopup, $state, ngFB) {
         $scope.data = {};
-
+    
         $scope.login = function (username) {
                 LoginService.loginUser($scope.data.username, $scope.data.password).success(function (data) {
                     $state.go('tab');
@@ -49,7 +49,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
     .controller('doctorLoginCtrl', function ($scope, doctorLoginService, $ionicPopup, $state, ngFB) {
         $scope.data = {};
         $scope.login = function (username) {
-               // alert("hi");
+                // alert("hi");
                 doctorLoginService.loginUser($scope.data.username, $scope.data.password).success(function (data) {
                     $state.go('doctortab.docappointments');
                 }).error(function (data) {
@@ -243,11 +243,32 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
     var findAllChats = function () {
         AppointmentService.findAll(localStorage.patientid).then(function (chats) {
             $scope.chats = chats;
-            console.log(chats);
         });
     }
 
     findAllChats();
+})
+
+.controller('Chatting', function ($scope, Socket, Chat,UserDetails) {
+    $scope.messages = Chat.getMessages();
+    $scope.sendMessage = function (msg) {
+        Chat.sendMessage(msg);
+        $scope.data.message = "";
+    };
+    var updateMessages = function () {
+            alert("updated");
+        }
+    $scope.messageIsMine = function (username) {
+        return $scope.data.username === username;
+    };
+
+    $scope.getBubbleClass = function (username) {
+        var classname = 'from-them';
+        if ($scope.messageIsMine(username)) {
+            classname = 'from-me';
+        }
+        return classname;
+    };
 })
 
 .controller('DocProfileCtrl', function ($scope, $stateParams, $state, DocProfileService, AppointmentService, $ionicModal) {
@@ -258,7 +279,6 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
     DocProfileService.getData(docname).then(function (employee) {
 
         $scope.employee = employee[0];
-        console.log(employee);
     });
 
 
@@ -266,27 +286,16 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
 
 })
 
-.controller('ChatsCtrl', function ($scope, AppointmentService) {
-    var findAllChats = function () {
-        AppointmentService.findAll(localStorage.patientid).then(function (chats) {
-            $scope.chats = chats;
-            console.log(chats);
-        });
-    }
-
-    findAllChats();
-})
 
 .controller('AppointmentsCtrl', function ($scope, AppointmentService) {
-    var findAllChats = function () {
-        AppointmentService.finddoc(localStorage.docname).then(function (chats) {
-            $scope.chats = chats;
-            console.log(chats);
-        });
-    }
+        var findAllChats = function () {
+            AppointmentService.finddoc(localStorage.docname).then(function (chats) {
+                $scope.chats = chats;
+            });
+        }
 
-    findAllChats();
-})
+        findAllChats();
+    })
 
 .controller('AccountCtrl', function ($scope, $state) {
         $scope.go = function () {
@@ -295,26 +304,26 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
         }
 
     })
-    .controller('DocAccountCtrl', function ($scope,$window, $state) {
+    .controller('DocAccountCtrl', function ($scope, $window, $state) {
         $scope.go = function () {
-               
+
 
             $state.go('home');
-               $window.location.reload();
+            $window.location.reload();
 
         }
 
     })
-    .controller('HomeCtrl', function ($scope,$window, $ionicPopup, $state) {
+    .controller('HomeCtrl', function ($scope, $window, $ionicPopup, $state) {
         $scope.goD = function () {
-            
+
             $state.go('doctorLogin');
-             $window.location.reload();
-            
+            $window.location.reload();
+
         }
         $scope.goP = function () {
             $state.go('login');
-              $window.location.reload();
+            $window.location.reload();
 
         }
     });

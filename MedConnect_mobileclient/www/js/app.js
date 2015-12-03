@@ -159,6 +159,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             templateUrl: 'templates/join-call.html',
             controller: 'DatepickerCtrl'
         })
+     .state('chatting', {
+            url: '/chatting',
+            templateUrl: 'templates/tab-chatting.html',
+            controller: 'Chatting'
+        })
         .state('home', {
             url: '/home',
             templateUrl: 'templates/home.html',
