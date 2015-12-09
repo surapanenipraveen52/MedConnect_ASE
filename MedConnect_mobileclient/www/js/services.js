@@ -1,15 +1,16 @@
     angular.module('starter.services', [])
+        .factory('Socket', function (UserDetails) {
+            var myIoSocket = io.connect('http://mcchatt.mybluemix.net:80');
+            myIoSocket.on('connect', function () {
+                console.log(UserDetails.getUser());
+                myIoSocket.emit('adduser', UserDetails.getUser().username);
+            });
+            return myIoSocket;
+        })
 
-    .factory('Socket', function () {
-        var myIoSocket = io.connect('http://mcchatt.mybluemix.net:80');
-        myIoSocket.on('connect', function () {
-            myIoSocket.emit('adduser', "sarath");
-        });
-        return myIoSocket;
-    })
-.factory('UserDetails', function () {
+    .factory('UserDetails', function () {
         var user = {};
-         return {
+        return {
             getUser: function () {
                 return user;
             },
@@ -19,6 +20,7 @@
         };
         return user;
     })
+
     .factory('Chat', function ($ionicScrollDelegate, Socket) {
 
         var username;
@@ -34,14 +36,15 @@
             return notification;
         };
 
-        Socket.on('updateusers', function (data) {
-        });
+        Socket.on('updateusers', function (data) {});
 
-        Socket.on('updatechat', function (sender,newMessage) {
-            var msg={};
-            msg.message=newMessage;
-            msg.username=sender;
+        Socket.on('updatechat', function (sender, newMessage) {
+            var msg = {};
+            msg.message = newMessage;
+            msg.username = sender;
             addMessage(msg);
+
+
         });
 
         var scrollBottom = function () {
@@ -53,8 +56,9 @@
             msg.notification = msg.notification || true;
             var el = document.getElementById('messagesec');
             var messageScope = angular.element(el).scope();
-            messageScope.$apply(function(){
-            messages.push(msg);
+            messageScope.$apply(function () {
+                messages.push(msg);
+
             });
             console.log(messageScope);
             scrollBottom();
@@ -84,7 +88,7 @@
 
 
 
-    .service('LoginService', function ($q, $http,UserDetails) {
+    .service('LoginService', function ($q, $http, UserDetails) {
             return {
                 loginUser: function (name, pw) {
                     var deferred = $q.defer();
@@ -120,7 +124,7 @@
                 }
             }
         })
-        .service('doctorLoginService', function ($q, $http) {
+        .service('doctorLoginService', function ($q, $http, UserDetails) {
             return {
                 loginUser: function (name, pw) {
                     var deferred = $q.defer();
@@ -132,6 +136,7 @@
                         contentType: "application/json"
 
                     }).success(function (data) {
+                        UserDetails.setUser(data[0]);
                         if (name == data[0].username && pw == data[0].password) {
                             localStorage.setItem("docmongoid", data[0]._id.$oid);
 
@@ -301,32 +306,222 @@
                     deferred.resolve(true);
                 })
                 return deferred.promise;
-            }
+            },
 
+            sendEmail: function (doctoremail, $cordovaEmailComposer) {
+                alert(2);
+
+                $cordovaEmailComposer.isAvailable().then(function () {
+                    // is available
+                    //alert(hi);
+                }, function () {
+                    // not available
+                    alert(hello);
+                });
+
+                var email = {
+                    to: 'chands4uonly@gmail.com',
+                    cc: 'erika@mustermann.de',
+                    bcc: ['john@doe.com', 'jane@doe.com'],
+                    attachments: [
+      'file://img/logo.png',
+      'res://icon.png',
+      'base64:icon.png//iVBORw0KGgoAAAANSUhEUg...',
+      'file://README.pdf'
+    ],
+                    subject: 'Cordova Icons',
+                    body: 'How are you? Nice greetings from Leipzig',
+                    isHtml: true
+                };
+
+
+            }
         }
     })
 
     .service('DocProfileService', function ($q, $http) {
-        var employees = [];
-        return {
-            getData: function (docname) {
+            var employees = [];
+            return {
+                getData: function (docname) {
 
+                    var deferred = $q.defer();
+                    $http({
+                        method: 'GET',
+                        url: 'https://api.mongolab.com/api/1/databases/medcon/collections/Doctors?&q=  {firstname:\'' + docname + '\'}&apiKey=BSHQMdPlD-USKTsizAPOBio_XS-05S-b',
+                        contentType: "application/json"
+
+                    }).success(function (data) {
+                        employees = data;
+
+                        deferred.resolve(data);
+                    })
+                    return deferred.promise;
+                }
+
+            }
+        })
+        .service('UpdateService1', function ($q, $http) {
+            return {
+
+                updateUser: function (oldname, newname) {
+                    var deferred = $q.defer();
+                    var promise = deferred.promise;
+                    $http({
+                        method: 'POST',
+                        url: 'http://lab8.mybluemix.net/rest/update/' + oldname,
+                        data: JSON.stringify({
+                            "$set": {
+                                "username": newname
+                            }
+                        }),
+
+                        contentType: "application/json"
+                    }).success(function (data) {})
+                    deferred.resolve('Welcome !');
+
+                    promise.success = function (fn) {
+                        promise.then(fn);
+                        return promise;
+                    }
+                    promise.error = function (fn) {
+                        promise.then(null, fn);
+                        return promise;
+                    }
+                    return promise;
+                }
+            }
+        })
+
+    .service('UpdateService2', function ($q, $http) {
+        return {
+
+            updatePwd: function (oldpwd, newpwd) {
                 var deferred = $q.defer();
+                var promise = deferred.promise;
+
                 $http({
                     method: 'GET',
-                    url: 'https://api.mongolab.com/api/1/databases/medcon/collections/Doctors?&q=  {firstname:\'' + docname + '\'}&apiKey=BSHQMdPlD-USKTsizAPOBio_XS-05S-b',
+                    url: 'https://api.mongolab.com/api/1/databases/ase/collections/Patients?q={password:\'' + oldpwd + '\'}&apiKey=ZE5gPXuMklJoxOhGZbFKK2tLg7SXx96I',
                     contentType: "application/json"
 
                 }).success(function (data) {
-                    employees = data;
 
-                    deferred.resolve(data);
+                    if (oldpwd == data[0].password) {
+
+                        $http({
+                            method: 'PUT',
+                            url: 'https://api.mongolab.com/api/1/databases/ase/collections/Patients/' + data[0]._id.$oid + '?apiKey=ZE5gPXuMklJoxOhGZbFKK2tLg7SXx96I',
+                            data: JSON.stringify({
+                                "$set": {
+                                    "password": newpwd
+                                }
+                            }),
+
+                            contentType: "application/json"
+                        }).success(function (data) {;
+                        })
+                        deferred.resolve('Welcome ' + data[0].username + '!');
+                    } else {
+                        deferred.reject('Wrong credentials.');
+                    }
+
                 })
-                return deferred.promise;
+                promise.success = function (fn) {
+                    promise.then(fn);
+                    return promise;
+                }
+                promise.error = function (fn) {
+                    promise.then(null, fn);
+                    return promise;
+                }
+                return promise;
+
             }
 
         }
     })
+
+    .service('UpdateService3', function ($q, $http) {
+            return {
+
+                updateEmail: function (oldemail, newemail) {
+                    var deferred = $q.defer();
+                    var promise = deferred.promise;
+
+                    $http({
+                        method: 'GET',
+                        url: 'https://api.mongolab.com/api/1/databases/ase/collections/Patients?q={email:\'' + oldemail + '\'}&apiKey=ZE5gPXuMklJoxOhGZbFKK2tLg7SXx96I',
+                        contentType: "application/json"
+
+                    }).success(function (data) {
+
+                        if (oldemail == data[0].email) {
+
+                            $http({
+                                method: 'PUT',
+                                url: 'https://api.mongolab.com/api/1/databases/ase/collections/Patients/' + data[0]._id.$oid + '?apiKey=ZE5gPXuMklJoxOhGZbFKK2tLg7SXx96I',
+                                data: JSON.stringify({
+                                    "$set": {
+                                        "email": newemail
+                                    }
+                                }),
+
+                                contentType: "application/json"
+                            }).success(function (data) {;
+                            })
+                            deferred.resolve('Welcome ' + data[0].username + '!');
+                        } else {
+                            deferred.reject('Wrong credentials.');
+                        }
+
+                    })
+                    promise.success = function (fn) {
+                        promise.then(fn);
+                        return promise;
+                    }
+                    promise.error = function (fn) {
+                        promise.then(null, fn);
+                        return promise;
+                    }
+                    return promise;
+
+                }
+
+            }
+        })
+        .service('DeleteService', function ($q, $http) {
+            return {
+
+                deleteUser: function (id) {
+                    var deferred = $q.defer();
+                    var promise = deferred.promise;
+
+
+
+                    $http({
+                        method: 'DELETE',
+                        url: 'http://lab8.mybluemix.net/rest/delete/' + id,
+                        contentType: "application/json"
+                    }).success(function (data) {
+
+                        deferred.resolve('Welcome ' + data.id + '!');
+                    })
+
+
+                    promise.success = function (fn) {
+                        promise.then(fn);
+                        return promise;
+                    }
+                    promise.error = function (fn) {
+                        promise.then(null, fn);
+                        return promise;
+                    }
+                    return promise;
+
+                }
+
+            }
+        })
 
     .service('EmployeeService', function ($q, $http) {
         var employees = [];

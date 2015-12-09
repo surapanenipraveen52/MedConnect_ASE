@@ -159,7 +159,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             templateUrl: 'templates/join-call.html',
             controller: 'DatepickerCtrl'
         })
-     .state('chatting', {
+        .state('chatting', {
             url: '/chatting',
             templateUrl: 'templates/tab-chatting.html',
             controller: 'Chatting'
@@ -168,6 +168,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
             url: '/home',
             templateUrl: 'templates/home.html',
             controller: 'HomeCtrl'
+        })
+        .state('update', {
+            url: '/update',
+            templateUrl: 'templates/update.html',
+            controller: 'UpdateCtrl'
+
+        })
+        .state('delete', {
+            url: '/delete',
+            templateUrl: 'templates/delete.html',
+            controller: 'DeleteCtrl'
+
         })
 
     // if none of the above states are matched, use this as the fallback

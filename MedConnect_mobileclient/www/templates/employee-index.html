@@ -1,19 +1,19 @@
-<ion-view view-title="MedConnect Home" >
-    
-  <ion-content class="padding">
-        <div class="bar bar-subheader item-input-inset">
-        <label class="item-input-wrapper">
-            <i class="icon ion-ios7-search placeholder-icon"></i>
-            <input id="searchKey" type="text" placeholder="Doctors Serach" ng-model="searchKey" autocorrect="off" >
-            <button class="button button-clear" ng-click="clearSearch()">X</button>
-        </label>
-        <button class="button button-clear" ng-click="search(searchKey)">Search</button>
-    </div><br><br>
+<ion-view view-title="MedConnect Home">
+
+    <ion-content has-header="true" padding="true">
+        <div class="item-input-inset">
+            <label class="item-input-wrapper">
+
+                <input id="searchKey" type="text" placeholder="Doctors Search" ng-model="searchKey" autocorrect="off">
+
+            </label>
+            <button class="button button-clear" ng-click="search(searchKey)">Search</button>
+            <button class="button button-clear" ng-click="clearSearch()">Clear</button>
+        </div>
+        <br>
         <ion-list>
-            <ion-item ng-repeat="employee in employees" type="item-text-wrap" class="item-avatar"
-                      href="#/employees/{{employee.id}}">
-                <img src="pics/{{employee.id}}.jpg"/>
-                {{employee.firstname}} {{employee.lastname}}
+            <ion-item ng-repeat="employee in employees" type="item-text-wrap" class="item-avatar" href="#/employees/{{employee.id}}">
+                <img src="pics/{{employee.id}}.jpg" /> {{employee.firstname}} {{employee.lastname}}
                 <p>{{employee.specialization}}</p>
             </ion-item>
         </ion-list>

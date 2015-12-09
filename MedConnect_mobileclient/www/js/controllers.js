@@ -6,7 +6,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
 
 .controller('LoginCtrl', function ($scope, LoginService, $ionicPopup, $state, ngFB) {
         $scope.data = {};
-    
+
         $scope.login = function (username) {
                 LoginService.loginUser($scope.data.username, $scope.data.password).success(function (data) {
                     $state.go('tab');
@@ -203,6 +203,7 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
             localStorage.setItem("doctormongoid", employee._id.$oid);
             localStorage.setItem("doctorid", employee.id);
             localStorage.setItem("doctorname", employee.firstname);
+            localStorage.setItem("doctoremail", employee.email);
         });
         $ionicModal.fromTemplateUrl('templates/datemodal.html',
             function (modal) {
@@ -231,8 +232,9 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
             var h = hour;
             var m = minute;
             var a = AM;
-            AppointmentService.createNew(localStorage.patientid, localStorage.doctormongoid, localStorage.doctorid, $scope.selecteddate,
+            AppointmentService.createNew(localStorage.patientid, localStorage.doctormongoid, localStorage.doctorid, localStorage.doctoremail, $scope.selecteddate,
                 h, m, a, localStorage.doctorname, localStorage.patientname).then(function (confirmed) {
+                AppointmentService.sendEmail(localStorage.doctoremail);
                 $state.go('tab.appointments');
             });
 
@@ -240,33 +242,168 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
     })
 
 .controller('ChatsCtrl', function ($scope, AppointmentService) {
-    var findAllChats = function () {
-        AppointmentService.findAll(localStorage.patientid).then(function (chats) {
-            $scope.chats = chats;
-        });
-    }
+        var findAllChats = function () {
+            AppointmentService.findAll(localStorage.patientid).then(function (chats) {
+                $scope.chats = chats;
+            });
+        }
 
-    findAllChats();
-})
+        findAllChats();
+    })
+    .controller('UpdateCtrl', function ($scope, UpdateService1, UpdateService2, UpdateService3, $ionicPopup, $state) {
 
-.controller('Chatting', function ($scope, Socket, Chat,UserDetails) {
+        $scope.data = {};
+        $scope.showstartCard1 = false;
+        $scope.showstartCard2 = false;
+        $scope.showstartCard3 = false;
+        $scope.hideCard1 = function () {
+            $scope.showstartCard1 = true;
+            // $scope.showsecondCard = true;
+        };
+        $scope.hideCard2 = function () {
+            $scope.showstartCard2 = true;
+            // $scope.showsecondCard = true;
+        };
+        $scope.hideCard3 = function () {
+            $scope.showstartCard3 = true;
+            // $scope.showsecondCard = true;
+        };
+
+        $scope.change = function (oldusername, newusername) {
+            if ($scope.data.oldusername == null) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Login failed!',
+                    template: 'Please enter your oldusername!'
+                })
+            } else if ($scope.data.newusername == null) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Login failed!',
+                    template: 'Please enter your new username!'
+                })
+            } else {
+
+
+                UpdateService1.updateUser($scope.data.oldusername, $scope.data.newusername).success(function (data) {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Updated!',
+                        template: 'Your details are updated succesfully!'
+                    });
+                }).error(function (data) {
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Update failed!',
+                        template: 'Please check your details!'
+                    });
+                });
+            }
+        }
+        $scope.change1 = function (oldpassword, newpassword) {
+
+
+            UpdateService2.updatePwd($scope.data.oldpassword, $scope.data.newpassword).success(function (data) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Updated!',
+                    template: 'Your details are updated succesfully!'
+                });
+            }).error(function (data) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Update failed!',
+                    template: 'Please check your details!'
+                });
+            });
+        }
+        $scope.change2 = function (oldemail, newemail) {
+
+
+            UpdateService3.updateEmail($scope.data.oldemail, $scope.data.newemail).success(function (data) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Updated!',
+                    template: 'Your details are updated succesfully!'
+                });
+            }).error(function (data) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Update failed!',
+                    template: 'Please check your details!'
+                });
+            });
+        }
+
+
+
+    })
+    .controller('DeleteCtrl', function ($scope, DeleteService, $ionicPopup, $state) {
+        $scope.data = {};
+
+        $scope.deleteaccount = function () {
+
+            alert("Are you sure you want to delete your account? ");
+            DeleteService.deleteUser(localStorage.id).success(function (data) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Deleted!',
+                    template: 'Your account is deleted succesfully!'
+                });
+            }).error(function (data) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Delete failed!',
+                    template: 'Please check your credentials!'
+                });
+            });
+
+        }
+
+    })
+
+.controller('Chatting', function ($scope, Socket, Chat, UserDetails) {
+
+
     $scope.messages = Chat.getMessages();
     $scope.sendMessage = function (msg) {
+
+
+
         Chat.sendMessage(msg);
+        $scope.getDatetime = new Date();
         $scope.data.message = "";
     };
     var updateMessages = function () {
-            alert("updated");
-        }
+        alert("updated");
+    }
+
+    var user = UserDetails.getUser().username;
+
+
+
     $scope.messageIsMine = function (username) {
-        return $scope.data.username === username;
+
+
+
+        if ((user === username) || (username === "SERVER")) {
+
+            return true;
+        } else {
+            return false;
+        }
+
     };
+    $scope.serverMsg = function (username) {
+        if (username === "SERVER") {
+
+            return true;
+        } else {
+            return false;
+        }
+
+    };
+
 
     $scope.getBubbleClass = function (username) {
         var classname = 'from-them';
+
         if ($scope.messageIsMine(username)) {
+
             classname = 'from-me';
+
         }
+
         return classname;
     };
 })
@@ -288,14 +425,14 @@ angular.module('starter.controllers', ['starter.services', 'ngOpenFB', 'pickadat
 
 
 .controller('AppointmentsCtrl', function ($scope, AppointmentService) {
-        var findAllChats = function () {
-            AppointmentService.finddoc(localStorage.docname).then(function (chats) {
-                $scope.chats = chats;
-            });
-        }
+    var findAllChats = function () {
+        AppointmentService.finddoc(localStorage.docname).then(function (chats) {
+            $scope.chats = chats;
+        });
+    }
 
-        findAllChats();
-    })
+    findAllChats();
+})
 
 .controller('AccountCtrl', function ($scope, $state) {
         $scope.go = function () {

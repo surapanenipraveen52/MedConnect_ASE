@@ -1,28 +1,27 @@
 <ion-view title="Scheduled Appointments">
-    
-  <ion-content class="padding">
-     
-      <ion-item ng-repeat="chat in chats" type="item-text-wrap" class="item item-icon-right item-avatar"
-                      href="#">
-            
-        
-                <img src="pics/{{chat.doctorid}}.jpg">
-           
-            <h2>{{chat.doctorname}}</h2>  
-              <p> {{chat.date}} &nbsp{{chat.h}} :{{chat.m}} :{{chat.a}} </p>
-          
-           <a on-tap="join()" href="#/joincall">
-              <i class="icon item-icon-right ion-ios-telephone-outline"></i>
-  </a>
-          
-          
-          <a on-tap="join()" href="#/chatting">
-              <i class="icon icon-right ion-email"></i>
-  </a>
-              
-          
-         
-         
+
+    <ion-content class="padding">
+
+        <ion-item ng-repeat="chat in chats" type="item-text-wrap" class="item item-icon-right item-avatar" href="#">
+
+
+            <img src="pics/{{chat.doctorid}}.jpg">
+
+            <h2>{{chat.doctorname}}</h2>
+            <p> {{chat.date}} &nbsp{{chat.h}} :{{chat.m}} :{{chat.a}} </p>
+
+            <a on-tap="join()" href="#/joincall">
+                <i class="icon item-icon-right ion-ios-videocam-outline"></i>
+            </a>
+
+
+            <a on-tap="join()" href="#/chatting">
+                <i class="icon icon-right ion-ios-chatbubble-outline"></i>
+            </a>
+
+
+
+
 
     </ion-content>
-</ion-view> 
+</ion-view>

@@ -1,5 +1,5 @@
 applications:
-- path: MedConnect.war
+- path: JavaHelloWorldApp.war
   memory: 1024M
   instances: 1
   domain: mybluemix.net

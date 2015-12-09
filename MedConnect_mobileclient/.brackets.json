@@ -1,0 +1,7 @@
+{
+    "jscodehints.detectedExclusions": [
+        "C:/Users/suramya/Desktop/MedConnect_ASE-master (1)/MedConnect_ASE-master/MedConnect_mobileclient/platforms/android/build/intermediates/assets/debug/www/plugins/de.appplant.cordova.plugin.email-composer/www/email_composer.js",
+        "C:/Users/suramya/Desktop/MedConnect_ASE-master (1)/MedConnect_ASE-master/MedConnect_mobileclient/platforms/android/cordova/lib/appinfo.js",
+        "C:/Users/suramya/Desktop/MedConnect_ASE-master (1)/MedConnect_ASE-master/MedConnect_mobileclient/platforms/android/cordova/lib/build.js"
+    ]
+}

@@ -1,0 +1,61 @@
+<ion-view view-title="MedConnect" name="login-view" >
+    
+  <ion-content class="padding">
+      <div class="bar bar-header bar-calm">
+  <h1 class="title">Update details</h1>
+</div>
+      
+      <br><br>
+      
+         <button ng-click="hideCard1()" class="button button-full button-positive button icon-right ion-chevron-right">
+          Change username
+      </button>
+               <div class="list card" id="startCard1" ng-show="showstartCard1">
+                    <div class="item item-image item item-text-wrap">
+          <label class="item item-input"> 
+              <input type="text" placeholder="Old Username" ng-model="data.oldusername">    
+          </label>
+          <label class="item item-input"> 
+              <input type="text" placeholder="New Username" ng-model="data.newusername"> 
+          </label> <br>
+          <button class="button button-outline  button-positive" ng-click="change(data.oldusername,data.newusername)">Update</button> <br>
+          </div>
+      </div>
+      
+      <div class="list list-inset">
+          <button ng-click="hideCard2()" class="button button-full button-positive button icon-right ion-chevron-right">
+          Change password
+      </button>
+               <div class="list card" id="startCard2" ng-show="showstartCard2">
+                    <div class="item item-image item item-text-wrap">
+          <label class="item item-input"> 
+              <input type="password" placeholder="Old password" ng-model="data.oldpassword">    
+          </label>
+          <label class="item item-input"> 
+              <input type="password" placeholder="New password" ng-model="data.newpassword"> 
+          </label> <br>
+          <button class="button button-outline  button-positive" ng-click="change1(data.oldpassword,data.newpassword)">Update</button>
+                   </div>
+          </div>
+                        
+                        <div class="list list-inset">
+          <button ng-click="hideCard3()" class="button button-full button-positive button icon-right ion-chevron-right">
+          Change email id
+      </button>
+               <div class="list card" id="startCard3" ng-show="showstartCard3">
+                    <div class="item item-image item item-text-wrap">
+          <label class="item item-input"> 
+              <input type="text" placeholder="Old email-id" ng-model="data.oldemail">    
+          </label>
+          <label class="item item-input"> 
+              <input type="text" placeholder="New email-id" ng-model="data.newemail"> 
+          </label> <br>
+          <button class="button button-outline  button-positive" ng-click="change2(data.oldemail,data.newemail)">Update</button>
+                   </div> </div>
+                        <br> <br> <br> <br>
+       <div>
+       <a class="subdue" href="#/tab/Settings"> Back</a></div>  
+         
+         
+  </ion-content>
+</ion-view>
